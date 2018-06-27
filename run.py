@@ -10,7 +10,8 @@ def Main():
         user_input = yaml.load(f)
 
     cluster_obj = PndaCluster(user_input.get('edge'))
-    cluster_obj.read_cluster_services()
+    cluster_obj.read_cluster_config()
+    print cluster_obj
 
 
 if __name__ == "__main__":

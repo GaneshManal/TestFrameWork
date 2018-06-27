@@ -5,5 +5,5 @@ class DataService:
     def list_datasets(self):
         pass
 
-    def create_dataset(self, name=test):
+    def create_dataset(self, name='test'):
         pass
