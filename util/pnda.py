@@ -1,29 +1,39 @@
-import requests
+import os
 import json
+import yaml
+
+import requests
 
 proxies = {
     'http': "socks4://localhost:9999",
     'https': "socks4://localhost:9999"
 }
 
+cluster_endpoints = None
+edge_ip = None
 
-class PndaCluster:
-    _edge_ip = None
-    _dm_port = None
-    _endpoints = None
+def read_cluster_endpoints():
+    with open(os.getcwd() + os.path.sep + 'conf' + os.path.sep + 'cluster-conf.yaml') as f:
+        user_input = yaml.load(f)
 
-    def __init__(self, edge_ip, dm_port=5000):
-        self._edge_ip = edge_ip
-        self._dm_port = dm_port
+        # ip_address = socket.gethostbyname(user_input.get("edge"))
+        global edge_ip
+        edge_ip = user_input.get("edge_ip")
+        dm_port = user_input.get("dm_port", 5000)
 
-    def is_reachable(self):
-        pass
-
-    def read_cluster_nodes(self):
-        pass
-
-    def read_cluster_config(self):
-        response = requests.get("http://%s:%d/environment/endpoints" % (self._edge_ip, self._dm_port), proxies=proxies)
+        response = requests.get("http://%s:%d/environment/endpoints" % (edge_ip, dm_port), proxies=proxies)
         print "Response Code:", response.status_code
-        self._endpoints = json.loads(response.text)
+
+        global cluster_endpoints
+        cluster_endpoints = json.loads(response.text)
+        print json.dumps(cluster_endpoints)
+
+
+def read_deployment_manager_endpoint():
+    global cluster_endpoints
+    if not cluster_endpoints:
+        read_cluster_endpoints()
+    return edge_ip, 5000
+
+
 
