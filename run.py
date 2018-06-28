@@ -3,9 +3,8 @@ import yaml
 from util.pnda import PndaCluster
 
 
-def Main():
+def run_tests():
 
-    user_input = None
     with open(os.getcwd() + os.path.sep + 'conf' + os.path.sep + 'cluster-conf.yaml') as f:
         user_input = yaml.load(f)
 
@@ -15,4 +14,4 @@ def Main():
 
 
 if __name__ == "__main__":
-    Main()
+    run_tests()
