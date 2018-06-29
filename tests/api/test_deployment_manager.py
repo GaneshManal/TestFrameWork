@@ -16,12 +16,12 @@ class TestDeploymentManager:
     @skipIf(not cluster_reachable, "cluster Not reachable")
     def test_list_repository_packages(self):
         response = requests.get("http://%s:%d/repository/packages?user.name=%s" %
-                                (self._edge_ip, self._dm_port, self._user), proxies=proxies)
+                                (self._edge_ip, self._dm_port, self._user), proxies=self._proxies)
         print response.text
         nose.tools.eq_(response.status_code, 200, msg=None)
 
     @skipIf(not cluster_reachable, "cluster Not reachable")
     def test_list_deployed_packages(self):
         response = requests.get("http://%s:%d/packages?user.name=%s" %
-                                (self._edge_ip, self._dm_port, self._user), proxies=proxies)
+                                (self._edge_ip, self._dm_port, self._user), proxies=self._proxies)
         nose.tools.eq_(response.status_code, 200, msg=None)
