@@ -3,17 +3,14 @@ import nose
 from util.pynose import skip, skipIf
 from util.pnda import read_deployment_manager_endpoint, cluster_reachable
 
-proxies = {
-    'http': "socks4://localhost:9999",
-    'https': "socks4://localhost:9999"
-}
 
 
 class TestDeploymentManager:
     _edge_ip, _dm_port = None, None
+    _proxies = None
 
     def __init__(self):
-        self._edge_ip, self._dm_port = read_deployment_manager_endpoint()
+        self._edge_ip, self._dm_port, self._proxies = read_deployment_manager_endpoint()
         self._user = 'pnda'
 
     @skipIf(not cluster_reachable, "cluster Not reachable")

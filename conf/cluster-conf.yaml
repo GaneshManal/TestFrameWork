@@ -1,1 +1,5 @@
 edge_ip: 10.0.0.38
+proxies:
+    http: socks4://localhost:9999
+    https: socks4://localhost:9999
+

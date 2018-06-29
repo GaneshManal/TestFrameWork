@@ -4,14 +4,12 @@ import yaml
 
 import requests
 
-proxies = {
-    'http': "socks4://localhost:9999",
-    'https': "socks4://localhost:9999"
-}
+
 
 cluster_endpoints = None
 edge_ip = None
 cluster_reachable = False
+proxies = None
 
 
 def read_cluster_endpoints():
@@ -19,8 +17,10 @@ def read_cluster_endpoints():
         user_input = yaml.load(f)
 
         global edge_ip
+        global proxies
         edge_ip = user_input.get("edge_ip")
         dm_port = user_input.get("dm_port", 5000)
+        proxies = user_input.get("proxies")
 
         try:
             response = requests.get("http://%s:%d/environment/endpoints" % (edge_ip, dm_port), proxies=proxies)
@@ -40,6 +40,12 @@ def read_deployment_manager_endpoint():
     global cluster_endpoints
     if not cluster_endpoints:
         read_cluster_endpoints()
-    return edge_ip, 5000
+    return edge_ip, 5000, proxies
 
+
+def read_dataservice_endpoints():
+    global cluster_endpoints
+    if not cluster_endpoints:
+        read_cluster_endpoints()
+    return edge_ip, 7000, proxies
 
