@@ -1,13 +1,11 @@
-import os
-import yaml
-from util.pnda import PndaCluster
+import nose
 
 
 def run_tests():
 
-    cluster_obj = PndaCluster()
-    cluster_obj.read_cluster_config()
-    # print cluster_obj
+    # cluster_config = read_cluster_endpoints()
+    # print cluster_config
+    nose.main()
 
 
 if __name__ == "__main__":
