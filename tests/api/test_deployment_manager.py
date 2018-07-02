@@ -4,7 +4,6 @@ from util.pynose import skip, skipIf
 from util.pnda import read_deployment_manager_endpoint, cluster_reachable
 
 
-
 class TestDeploymentManager:
     _edge_ip, _dm_port = None, None
     _proxies = None

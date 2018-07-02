@@ -1,9 +1,7 @@
 import os
 import json
 import yaml
-
 import requests
-
 
 
 cluster_endpoints = None
@@ -29,7 +27,6 @@ def read_cluster_endpoints():
         except requests.exceptions.RequestException as e:
             print e
             return
-
         print "Response Code:", response.status_code
         global cluster_endpoints
         cluster_endpoints = json.loads(response.text)
@@ -43,9 +40,8 @@ def read_deployment_manager_endpoint():
     return edge_ip, 5000, proxies
 
 
-def read_dataservice_endpoints():
+def read_data_service_endpoints():
     global cluster_endpoints
     if not cluster_endpoints:
         read_cluster_endpoints()
     return edge_ip, 7000, proxies
-
