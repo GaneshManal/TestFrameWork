@@ -29,6 +29,6 @@ def skip(reason):
 
 def skipIf(condition, reason):
     """Skip a test if the condition is true."""
-    if condition:
+    if not condition:
         return skip(reason)
     return _id

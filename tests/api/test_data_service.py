@@ -11,13 +11,12 @@ class TestDataService(object):
     def __init__(self):
         self._edge_ip, self._data_service_port, self._proxies = read_data_service_endpoints()
 
-    @skipIf(cluster_reachable, "cluster Not reachable")
+    @skipIf(not cluster_reachable, "cluster Not reachable")
     def test_list_datasets(self):
-        response = requests.get("http://%s:%d/api/v1/datasets" % (self._edge_ip, self._data_service_port),
-                                proxies=self._proxies)
+        response = requests.get("http://%s:%d/api/v1/datasets" % (self._edge_ip, self._data_service_port))
         nose.tools.eq_(response.status_code, 200, msg=None)
 
-    @skipIf(cluster_reachable, "cluster Not reachable")
+    @skipIf(not cluster_reachable, "cluster Not reachable")
     def test_list_deployed_packages(self):
         assert 'b' == 'b'
 
