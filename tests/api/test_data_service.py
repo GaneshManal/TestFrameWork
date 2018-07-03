@@ -1,22 +1,22 @@
 import requests
 import nose
-from util.pynose import skip, skipIf
-from util.pnda import read_data_service_endpoints, cluster_reachable
+from util.pynose import skipIf
+from util.pnda import read_data_service_endpoints
+from util import config
 
 
 class TestDataService(object):
     _edge_ip, _data_service_port = None, None
-    _proxies = None
 
     def __init__(self):
-        self._edge_ip, self._data_service_port, self._proxies = read_data_service_endpoints()
+        self._edge_ip, self._data_service_port = read_data_service_endpoints()
 
-    @skipIf(not cluster_reachable, "cluster Not reachable")
+    @skipIf(not config.cluster_reachable, "cluster Not reachable")
     def test_list_datasets(self):
-        response = requests.get("http://%s:%d/api/v1/datasets" % (self._edge_ip, self._data_service_port))
-        nose.tools.eq_(response.status_code, 200, msg=None)
+        resp = requests.get("http://%s:%d/api/v1/datasets" % (self._edge_ip, self._data_service_port))
+        nose.tools.eq_(resp.status_code, 200, msg=None)
 
-    @skipIf(not cluster_reachable, "cluster Not reachable")
+    @skipIf(not config.cluster_reachable, "cluster Not reachable")
     def test_list_deployed_packages(self):
         assert 'b' == 'b'
 
