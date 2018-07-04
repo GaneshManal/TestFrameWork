@@ -1,7 +1,7 @@
 import nose
 
 
-class TestDeploymentManager:
+class TestApplication:
 
     def __init__(self):
         pass
@@ -12,11 +12,6 @@ class TestDeploymentManager:
     def tearDown(self):
         pass
 
-    def create_application(self):
+    def test_flink_application(self):
         pass
-
-    def start_application(self):
-        pass
-
-
 

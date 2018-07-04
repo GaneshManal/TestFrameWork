@@ -32,3 +32,7 @@ def read_data_service_endpoints():
     if not config.cluster_endpoints:
         read_cluster_endpoints()
     return config.edge_ip, 7000
+
+
+def exec_command_on_spec_node():
+    pass

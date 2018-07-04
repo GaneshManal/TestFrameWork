@@ -1,7 +1,8 @@
 import nose
+from lib.sample import Math
 
 
-class TestDeploymentManager:
+class PackageRepositoryManager:
 
     def __init__(self):
         pass
@@ -12,11 +13,9 @@ class TestDeploymentManager:
     def tearDown(self):
         pass
 
-    def create_application(self):
+    def download_package(self):
         pass
 
-    def start_application(self):
+    def upload_package(self):
         pass
-
-
 
