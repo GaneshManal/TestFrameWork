@@ -2,14 +2,13 @@ import requests
 from conf.constants import package_link
 
 
-class DeploymentManager:
+class PackageRepoManager:
 
-    def __init__(self, dm_host, dm_port):
-        self.dm_host = dm_host
-        self.dm_port = dm_port
+    def __init__(self, prm_host, prm_port):
+        self.prm_host = prm_host
+        self.prm_port = prm_port
 
     def download_upload_package(self, package_name):
-
         download_command = "sudo wget -O /tmp/%s.tar.gz %s" % (package_name, package_link)
         upload_command = "curl -X PUT %s:%d/packages/%s.tar.gz?user.name=pnda --upload-file /tmp/%s.tar.gz" % (
         self.dm_host, self.pkgm_port, pkg_name, pkg_name)

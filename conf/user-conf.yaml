@@ -1,0 +1,19 @@
+edge_ip: 52.37.122.95
+applications:
+    spark:
+        batch:
+            - sample-app-1:
+                name: sample-app1
+                package-name: spark-batch-example-app-wf-1.1.2
+                package-location: https://s3.amazonaws.com/pnda-apps-public/spark-batch-example-app-wf-1.1.2.tar.gz
+                topic-name: avro.pnda.sample.batch.1
+        streaming:
+            - sample-app-1":
+                name: sample-app2
+                package-name: spark-streaming-example-app-python-1.1.1
+                package-location: https://s3.amazonaws.com/pnda-apps-public/spark-streaming-example-app-python-1.1.1.tar.gz
+                topic-name: avro.pnda.sample.streaming.1
+    flink:
+        batch:
+        streaming:
+
