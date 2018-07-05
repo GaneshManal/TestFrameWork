@@ -1,5 +1,5 @@
+import sys
 from nose import with_setup
-
 from util.pnda import ClusterConnection
 from lib.kafka_manager import KafkaManager
 from lib.deployment_manager import DeploymentManager
@@ -40,21 +40,52 @@ class TestApplication(object):
     def test_spark_applications(self):
         for app_type, apps in self._spark_apps.iteritems():
             if app_type.lower() == 'batch':
-                for app in apps:
-                    self.run_spark_batch_processing_app(app)
+                for x_app in apps:
+                    self.run_spark_batch_processing_app(x_app)
 
             elif app_type.lower() == 'streaming':
-                for app in apps:
-                    self.run_spark_stream_processing_app(app)
+                for x_app in apps:
+                    self.run_spark_stream_processing_app(x_app)
 
-    def run_spark_batch_processing_app(self, app_details):
+    def run_spark_batch_processing_app(self, app_data):
+        app_name = app_data.keys()[0]
+        app_details = app_data.get(app_name)
+
+        # Create kafka Topic
+        ret = self._kafka_manager.create_topic(app_details.get('topic-name', 'test-name'))
+        if not ret:
+            print("Unable to Create Kafka topic.")
+            sys.exit(1)
+
+        # Run producer to generate test data
+        ret = self._kafka_manager.run_producer(app_details)
+        if not ret:
+            print("Failed to produce data.")
+            sys.exit(1)
+
+        # Download application package
+        ret = self._package_repo_manager.download_network_package(app_details.get('package-location'))
+        if not ret:
+            print("Unable to download the package")
+            sys.exit(1)
+
+        # Deploy the package
+        ret = self._deployment_manager.deploy_package(app_details.get('package-name'))
+        if not ret:
+            print("Deployment Manager Failed to deploy the package")
+            sys.exit(1)
+
+        # Create application for the Package
+        ret = self._deployment_manager.create_application(app_details.get('package-name'), app_details.get('name'))
+        if not ret:
+            print("Deployment Manager Failed to create the application")
+            sys.exit(1)
+
+        # Start application
+        ret = self._deployment_manager.start_application(app_details.get('name'))
+        if not ret:
+            print("Deployment Manager Failed to start the application")
+            sys.exit(1)
+
+    def run_spark_stream_processing_app(self, app_name, app_details):
         pass
-
-    def run_spark_stream_processing_app(self, app_details):
-        pass
-
-
-
-
-
-

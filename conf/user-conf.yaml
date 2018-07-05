@@ -3,16 +3,41 @@ applications:
     spark:
         batch:
             - sample-app-1:
-                name: sample-app1
+                name: spark-batch-1
                 package-name: spark-batch-example-app-wf-1.1.2
                 package-location: https://s3.amazonaws.com/pnda-apps-public/spark-batch-example-app-wf-1.1.2.tar.gz
-                topic-name: avro.pnda.sample.batch.1
+                topic-name: avro.pnda.sample.batch
+                event-count: 10
+                producer-file: spark-batch.py
+                payload:
+                    package: spark-batch-example-app-wf-1.1.2
+                    oozie:
+                        example:
+                            freq_in_mins: 180
+                            start: ${deployment_start}
+                            end: ${deployment_end}
+                            input_data: /user/pnda/PNDA_datasets/datasets/source=test-src/year=*
         streaming:
             - sample-app-1":
-                name: sample-app2
+                name: sample-streaming-1
                 package-name: spark-streaming-example-app-python-1.1.1
                 package-location: https://s3.amazonaws.com/pnda-apps-public/spark-streaming-example-app-python-1.1.1.tar.gz
-                topic-name: avro.pnda.sample.streaming.1
+                topic-name: avro.pnda.sample.streaming
+                event.count: 10
+                producer-file: spark-streaming.py
+                payload:
+                    package: spark-streaming-example-app-python-1.1.1
+                    sparkStreaming:
+                        example:
+                            main_py: job.py
+                            py_files: dataplatform-raw.avsc,avro-1.8.1-py2.7.egg
+                            log_level: INFO
+                            batch_size_seconds: 2
+                            processing_parallelism: 1
+                            checkpoint_path:
+                            input_topic: test-topic2
+                            consume_from_beginning: false
+                            spark_submit_args: --conf spark.yarn.executor.memoryOverhead=500 --jars hdfs:///pnda/deployment/app_packages/kafka-clients-0.8.2.2.jar,hdfs:///pnda/deployment/app_packages/spark-streaming-kafka_2.10-1.6.0.jar,hdfs:///pnda/deployment/app_packages/kafka_2.10-0.8.2.2.jar,hdfs:///pnda/deployment/app_packages/metrics-core-2.2.0.jar
     flink:
         batch:
         streaming:

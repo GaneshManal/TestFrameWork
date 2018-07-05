@@ -1,4 +1,10 @@
 import requests
+import os
+import io
+import time
+import avro.schema
+import avro.io
+from kafka import KafkaProducer
 
 
 class KafkaManager(object):
@@ -17,13 +23,30 @@ class KafkaManager(object):
             return True
         return False
 
-    def _run_producer(self, topic, event_count, producer_type):
-        is_successfully_produced = False
-        produced_count = eval("%s_producer.produce(self.kafka_broker, topic, event_count)" % producer_type)
-        if produced_count == event_count:
-            is_successfully_produced = True
-        return is_successfully_produced
+    def run_producer(self, app_details):
+        produced_count = self._produce_data(app_details)
+        if produced_count == app_details.get('event-count'):
+            return True
+        return False
 
-    def run_producer(self, package, topic, event_count):
-        producer_result = self._run_producer(topic, event_count, "sb")
-        return producer_result
+    def _produce_data(self, app_details):
+        producer = KafkaProducer(bootstrap_servers=self.broker)
+
+        # Load AVRO schema
+        schema_file = os.getcwd() + os.pathsep + 'conf' + os.pathsep + 'dataplatform-raw.avsc'
+        schema = avro.schema.parse(open(schema_file).read())
+        current_milli_time = lambda: int(round(time.time() * 1000))
+
+        seq = 0
+        while seq < app_details.get('event-count', 10):
+            writer = avro.io.DatumWriter(schema)
+            bytes_writer = io.BytesIO()
+            encoder = avro.io.BinaryEncoder(bytes_writer)
+            writer.write({"source": app_details.get('name'), "timestamp": current_milli_time(),
+                          "rawdata": "a=1;b=2;c=%s;gen_ts=%s" % (seq, current_milli_time())}, encoder)
+            raw_bytes = bytes_writer.getvalue()
+            producer.send(app_details.get('topic-name'), raw_bytes)
+            seq += 1
+
+        producer.close()
+        return seq
