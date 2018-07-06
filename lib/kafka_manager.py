@@ -48,9 +48,7 @@ class KafkaManager(object):
         return False
 
     def _produce_data(self, app_details):
-        self.logger.debug('Ganesh - inside produce data')
-        self.logger.debug('Ganesh broker not avail - %s', self.broker)
-        producer = KafkaProducer(bootstrap_servers=[brokers])
+        producer = KafkaProducer(bootstrap_servers=[self.broker], api_version=(0, 10, 1))
 
         # Load AVRO schema
         schema_file = os.getcwd() + os.path.sep + 'conf' + os.path.sep + 'dataplatform-raw.avsc'
@@ -62,11 +60,14 @@ class KafkaManager(object):
             writer = avro.io.DatumWriter(schema)
             bytes_writer = io.BytesIO()
             encoder = avro.io.BinaryEncoder(bytes_writer)
+
+            self.logger.debug('Writing rawdata: %s', '"a=1;b=2;')
             writer.write({"source": app_details.get('name'), "timestamp": current_milli_time(),
-                          "rawdata": "a=1;b=2;c=%s;gen_ts=%s" % (seq, current_milli_time())}, encoder)
+                          "rawdata": "a=1;b=2;c=%s;gen_ts=%s" % (count, current_milli_time())}, encoder)
             raw_bytes = bytes_writer.getvalue()
             producer.send(app_details.get('topic-name'), raw_bytes)
             count += 1
 
+        self.logger.info('Data produced successfully')
         producer.close()
         return count

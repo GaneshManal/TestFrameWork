@@ -70,13 +70,16 @@ class TestApplication(object):
         if not ret:
             self.logger.error("Failed to produce data.")
             sys.exit(1)
+        self.logger.info('Success - Data produced.')
 
         # Download application package
+        self.logger.debug("Package Link - %s", app_details.get('package-location'))
         ret = self._package_repo_manager.download_network_package(app_details.get('package-location'))
         package_file = ret
         if not ret:
-            self.logger.error("Unable to download the package")
+            self.logger.error("Unable to download the package.")
             sys.exit(1)
+        self.logger.info('Success - Package Downloaded..')
 
         # Upload application package package repository
         ret = self._package_repo_manager.upload_package_to_repository(package_file)
