@@ -2,10 +2,12 @@ import requests
 import nose
 from util.pynose import skipIf
 from util.pnda import ClusterConnection
+from util.common import get_logger
 
 
 class TestDeploymentManager:
     _edge_ip, _dm_port = None, None
+    logger = get_logger('TestDeploymentManager')
 
     def __init__(self):
         self._user = 'pnda'

@@ -1,0 +1,17 @@
+avro==1.8.1
+certifi==2018.4.16
+chardet==3.0.4
+idna==2.7
+kafka-python==1.3.5
+nose==1.3.7
+pip==10.0.1
+PySocks==1.6.8
+pywebhdfs==0.4.1
+PyYAML==4.1
+requests==2.19.1
+setuptools==39.2.0
+six==1.11.0
+urllib3==1.23
+wget==3.2
+wheel==0.31.1
+win-inet-pton==1.0.1

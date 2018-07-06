@@ -1,70 +1,52 @@
 import requests
-from conf.constants import package_link
+import time
+import json
 
 
 class DeploymentManager:
+    dm_host, dm_port = None, None
 
     def __init__(self, dm_host, dm_port):
         self.dm_host = dm_host
         self.dm_port = dm_port
 
-    def download_upload_package(self, package_name):
-
-        download_command = "sudo wget -O /tmp/%s.tar.gz %s" % (package_name, package_link)
-        upload_command = "curl -X PUT %s:%d/packages/%s.tar.gz?user.name=pnda --upload-file /tmp/%s.tar.gz" % (
-        self.dm_host, self.pkgm_port, pkg_name, pkg_name)
-        commands = [download_command, upload_command]
-        is_download_success = utils.exe_cli(commands)
-        return is_download_success
-
-    def deploy_package(self, test_num):
-        is_deploy_success = False
-        pkg_name = eval("PACKAGE_LIST.TEST%d" % test_num)
-        uri = "http://%s:%d/packages/%s?user.name=pnda" % (self.dm_host, self.dm_port, pkg_name)
-
-        res = requests.put(uri)
+    def deploy_package(self, package_name):
+        url = "http://%s:%d/packages/%s?user.name=pnda" % (self.dm_host, self.dm_port, package_name)
+        res = requests.put(url)
         if res.status_code == 202:
-            LOGGER.debug("Deployed %s", pkg_name)
-            is_deploy_success = True
+            return True
+        return False
 
-        return is_deploy_success
+    @classmethod
+    def _check_package_status(cls, pkg_name, exp_status):
+        url = "http://%s:%d/packages/%s" % (cls.dm_host, cls.dm_port, pkg_name)
+        while True:
+            resp = requests.get(url)
+            if json.loads(resp.text)["status"] == exp_status:
+                break
+            time.sleep(1)
+        return True
 
-    def create_application(self, test_num):
-        is_application_created = False
-        pkg_name = eval("PACKAGE_LIST.TEST%d" % test_num)
-        self._status_check("packages", pkg_name, "DEPLOYED")
+    @classmethod
+    def create_application(cls, pkg_name, app_name):
+        cls._check_package_status(pkg_name, "DEPLOYED")
 
         payload_pkg_name = '_'.join(''.join(pkg_name.split('.')[:-2]).split('-')[:-1])
-        payload = eval("APPLICATION_PAYLOAD.%s" % payload_pkg_name)
-        application = eval("APPLICATION_NAME.TEST%d" % test_num)
+        payload = "APPLICATION_PAYLOAD.%s" % payload_pkg_name
         headers = {"content-type": "application/json"}
-        uri = "http://%s:%d/applications/%s?user.name=pnda" % (self.dm_host, self.dm_port, application)
+        uri = "http://%s:%d/applications/%s?user.name=pnda" % (cls.dm_host, cls.dm_port, app_name)
 
         res = requests.put(uri, data=json.dumps(payload), headers=headers)
         if res.status_code == 202:
-            LOGGER.debug("Created %s", application)
-            is_application_created = True
+            return True
+        return False
 
-        return is_application_created
-
-    def start_application(self, test_num):
-        is_application_started = False
-        application = eval("APPLICATION_NAME.TEST%d" % test_num)
-        self._status_check("applications", application, "CREATED")
-        uri = "http://%s:%d/applications/%s/start?user.name=pnda" % (self.dm_host, self.dm_port, application)
+    @classmethod
+    def start_application(cls, app_name):
+        cls._check_package_status(app_name, "CREATED")
+        uri = "http://%s:%d/applications/%s/start?user.name=pnda" % (cls.dm_host, cls.dm_port, app_name)
 
         res = requests.post(uri)
         if res.status_code == 202:
-            LOGGER.debug("Started %s", application)
-            is_application_started = True
-
-        return is_application_started
-
-    def _status_check(self, component, component_name, status):
-        check_uri = "http://%s:%d/%s/%s" % (self.dm_host, self.dm_port, component, component_name)
-        while (1):
-            res = requests.get(check_uri)
-            if json.loads(res.text)["status"] == status:
-                break
-            time.sleep(1)
-
+            return True
+        return False
