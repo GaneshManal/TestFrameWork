@@ -65,8 +65,15 @@ class TestApplication(object):
 
         # Download application package
         ret = self._package_repo_manager.download_network_package(app_details.get('package-location'))
+        package_file = ret
         if not ret:
             print("Unable to download the package")
+            sys.exit(1)
+
+        # Upload application package package repository
+        ret = self._package_repo_manager.upload_package_to_repository(package_file)
+        if not ret:
+            print("Failed to upload package to package repository")
             sys.exit(1)
 
         # Deploy the package

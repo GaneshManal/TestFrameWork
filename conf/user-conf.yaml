@@ -1,4 +1,4 @@
-edge_ip: 52.37.122.95
+edge_ip: 34.220.85.39
 applications:
     spark:
         batch:

@@ -1,3 +1,4 @@
+import os
 import requests
 import wget
 
@@ -14,8 +15,8 @@ class PackageRepoManager:
 
     @staticmethod
     def download_network_package(pkg_url):
-        ret = wget.download(pkg_url)
-        return ret
+        filename = wget.download(pkg_url, out=os.getcwd() + os.path.sep + 'output')
+        return filename
 
     def upload_package_to_repository(self, package_file):
         ret = requests.put("%s:%d/packages/%s.tar.gz?user.name=pnda" % (self.prm_host, self.prm_port, package_file),

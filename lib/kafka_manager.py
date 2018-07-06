@@ -23,6 +23,16 @@ class KafkaManager(object):
             return True
         return False
 
+    def delete_topic(self, topic_name):
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
+        data = {"topic": "%s" % topic_name}
+        uri = "%s/topics/delete" % self.manager
+
+        res = requests.post(uri, data=data, headers=headers)
+        if res.status_code == 200:
+            return True
+        return False
+
     def run_producer(self, app_details):
         produced_count = self._produce_data(app_details)
         if produced_count == app_details.get('event-count'):
@@ -33,12 +43,12 @@ class KafkaManager(object):
         producer = KafkaProducer(bootstrap_servers=self.broker)
 
         # Load AVRO schema
-        schema_file = os.getcwd() + os.pathsep + 'conf' + os.pathsep + 'dataplatform-raw.avsc'
+        schema_file = os.getcwd() + os.path.sep + 'conf' + os.path.sep + 'dataplatform-raw.avsc'
         schema = avro.schema.parse(open(schema_file).read())
         current_milli_time = lambda: int(round(time.time() * 1000))
 
-        seq = 0
-        while seq < app_details.get('event-count', 10):
+        count = 0
+        while count < app_details.get('event-count', 10):
             writer = avro.io.DatumWriter(schema)
             bytes_writer = io.BytesIO()
             encoder = avro.io.BinaryEncoder(bytes_writer)
@@ -46,7 +56,7 @@ class KafkaManager(object):
                           "rawdata": "a=1;b=2;c=%s;gen_ts=%s" % (seq, current_milli_time())}, encoder)
             raw_bytes = bytes_writer.getvalue()
             producer.send(app_details.get('topic-name'), raw_bytes)
-            seq += 1
+            count += 1
 
         producer.close()
-        return seq
+        return count
