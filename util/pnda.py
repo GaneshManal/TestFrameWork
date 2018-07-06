@@ -52,5 +52,8 @@ class ClusterConnection:
     def get_input_applications(self, processing_framework='spark'):
         return self.input.get('applications').get(processing_framework)
 
+    def get_edge_ip(self):
+        return self.input.get('edge_ip'), self.input.get('pem_file')
+
     def exec_command_on_spec_node(self):
         pass
