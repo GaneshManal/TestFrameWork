@@ -2,23 +2,30 @@ import requests
 import os
 import io
 import time
+import json
 import avro.schema
 import avro.io
 from kafka import KafkaProducer
+from util.common import get_logger
 
 
 class KafkaManager(object):
+    logger = get_logger('KafkaManager')
 
     def __init__(self, manager, broker):
         self.manager = manager
         self.broker = broker
+        self.logger.info('Manager: %s, broker: %s' % (self.manager, self.broker))
 
     def create_topic(self, topic_name, partition_count=1, replica_factor=1):
+        self.logger.info('Creating Kafka Topic - %s', topic_name)
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         data = {"topic": "%s" % topic_name, "partitions": "%d" % partition_count, "replication": "%d" % replica_factor}
-        uri = "%s/topics/create" % self.manager
+        url = "%s/topics/create" % self.manager
+        self.logger.debug('url - %s, data - %s' % (url, json.dumps(data)))
 
-        res = requests.post(uri, data=data, headers=headers)
+        res = requests.post(url, data=data, headers=headers)
+        self.logger.debug('response - %d', res.status_code)
         if res.status_code == 200:
             return True
         return False
@@ -34,13 +41,16 @@ class KafkaManager(object):
         return False
 
     def run_producer(self, app_details):
+        self.logger.debug('Ganesh - inside run producer')
         produced_count = self._produce_data(app_details)
         if produced_count == app_details.get('event-count'):
             return True
         return False
 
     def _produce_data(self, app_details):
-        producer = KafkaProducer(bootstrap_servers=self.broker)
+        self.logger.debug('Ganesh - inside produce data')
+        self.logger.debug('Ganesh broker not avail - %s', self.broker)
+        producer = KafkaProducer(bootstrap_servers=[brokers])
 
         # Load AVRO schema
         schema_file = os.getcwd() + os.path.sep + 'conf' + os.path.sep + 'dataplatform-raw.avsc'

@@ -1,4 +1,5 @@
 edge_ip: 34.220.85.39
+kafka_ip: 18.236.75.32
 applications:
     spark:
         batch:
@@ -41,4 +42,7 @@ applications:
     flink:
         batch:
         streaming:
-
+logs:
+    log_level: DEBUG
+    log_file: pnda_taf.log
+    formatter: "[*(asctime)s-*(filename)s:*(name)s:*(lineno)s-*(funcName)s()] -*(levelname)s: *(message)s"
