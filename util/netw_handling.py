@@ -12,7 +12,7 @@ class RemoteServer(object):
             print "Executing {}".format(command)
             stdin , stdout, stderr = c.exec_command(command)
             print stdout.read()
-            print( "Errors")
+            print("Errors")
             print stderr.read()
 
     def parse_node_details(self, node_details):

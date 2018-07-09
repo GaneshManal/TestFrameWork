@@ -5,15 +5,15 @@ import requests
 from util.common import get_logger
 
 
-class ClusterConnection:
+class ClusterConnection(object):
     clusterApiReachable = False
     cluster_nodes = dict()
     logger = get_logger('ClusterConnection')
 
     def __init__(self):
         self.endpoints, self.input = dict(), dict()
-        with open(os.getcwd() + os.path.sep + 'conf' + os.path.sep + 'user-conf.yaml') as f:
-            self.input = yaml.load(f)
+        with open(os.getcwd() + os.path.sep + 'conf' + os.path.sep + 'user-conf.yaml') as fd:
+            self.input = yaml.load(fd)
         # self.read_cluster_endpoints()
 
     def read_cluster_endpoints(self):
@@ -21,8 +21,8 @@ class ClusterConnection:
         try:
             response = requests.get("http://%s:%d/environment/endpoints" % (edge_node, dm_port))
             ClusterConnection.cluster_reachable = True
-        except requests.exceptions.RequestException as e:
-            print e
+        except requests.exceptions.RequestException as ex:
+            print ex
             return
         self.logger.info("Response Code: %d" % response.status_code)
         self.endpoints = json.loads(response.text)
@@ -51,10 +51,12 @@ class ClusterConnection:
 
         # GAMGAM: Hard Coded
         self.logger.debug('Ganesh actual broker: %s ', self.endpoints.get('kafka_brokers'))
-        self.endpoints['kafka_manager'] = 'http://' + self.input.get('kafka_ip') + ':10900/clusters/test-0607'
+        self.endpoints['kafka_manager'] = 'http://' + self.input.get('kafka_ip') \
+                                          + ':10900/clusters/test-0607'
         self.endpoints['kafka_brokers'] = ':'.join([self.input.get('kafka_ip'), '9092'])
         self.logger.debug('Kafka params: (Manager:%s, Broker: %s)' %
-                          (self.endpoints.get('kafka_manager'), self.endpoints.get('kafka_brokers')))
+                          (self.endpoints.get('kafka_manager'),
+                           self.endpoints.get('kafka_brokers')))
         return self.endpoints.get('kafka_manager'), self.endpoints.get('kafka_brokers')
 
     def read_hdfs_params(self):
