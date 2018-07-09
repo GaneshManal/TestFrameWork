@@ -28,7 +28,7 @@ class TestApplication(object):
         cls._deployment_manager = DeploymentManager(dm_host, dm_port)
 
         prm_host, prm_port = cls._conn_obj.read_package_repository_params()
-        cls._package_repo_manager = PackageRepoManager(prm_host, prm_host)
+        cls._package_repo_manager = PackageRepoManager(prm_host, prm_port)
 
         hdfs_host, hdfs_port = cls._conn_obj.read_hdfs_params()
         cls._hdfs_manager = HDFSManager(hdfs_host, hdfs_port)

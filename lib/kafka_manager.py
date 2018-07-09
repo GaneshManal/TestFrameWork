@@ -71,3 +71,4 @@ class KafkaManager(object):
         self.logger.info('Data produced successfully')
         producer.close()
         return count
+

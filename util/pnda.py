@@ -52,7 +52,7 @@ class ClusterConnection(object):
         # GAMGAM: Hard Coded
         self.logger.debug('Ganesh actual broker: %s ', self.endpoints.get('kafka_brokers'))
         self.endpoints['kafka_manager'] = 'http://' + self.input.get('kafka_ip') \
-                                          + ':10900/clusters/test-0607'
+                                          + ':10900/clusters/test-setup-09-jul'
         self.endpoints['kafka_brokers'] = ':'.join([self.input.get('kafka_ip'), '9092'])
         self.logger.debug('Kafka params: (Manager:%s, Broker: %s)' %
                           (self.endpoints.get('kafka_manager'),
