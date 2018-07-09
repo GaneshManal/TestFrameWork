@@ -6,15 +6,18 @@ from util.common import get_logger
 
 class DeploymentManager:
     dm_host, dm_port = None, None
-    logger = get_logger('PackageRepoManager')
+    logger = get_logger('DeploymentManager')
 
     def __init__(self, dm_host, dm_port):
         self.dm_host = dm_host
         self.dm_port = dm_port
 
     def deploy_package(self, package_name):
-        url = "http://%s:%s/packages/%s?user.name=pnda" % (self.dm_host, self.dm_port, package_name)
+        # url = 'http://%s:%s/api/dm/packages/%s?user.name=pnda' % (self.dm_host, self.dm_port, package_name)
+        url = 'http://%s/api/dm/packages/%s?user.name=pnda' % (self.dm_host, package_name)
+        self.logger.debug('inside deploy_package ,url is %s', url)
         resp = requests.put(url)
+        self.logger.debug('resp status code is %s', resp.status_code)
         if resp.status_code == 200:
             return True
         return False
@@ -22,7 +25,7 @@ class DeploymentManager:
     @classmethod
     def _check_package_status(cls, pkg_name, exp_status):
         url = "http://%s:%s/packages/%s" % (cls.dm_host, cls.dm_port, pkg_name)
-        cls.logger.debug('inside check package ,url is ', url)
+        cls.logger.debug('inside check package ,url is %s', url)
         while True:
             resp = requests.get(url)
             if json.loads(resp.text)["status"] == exp_status:

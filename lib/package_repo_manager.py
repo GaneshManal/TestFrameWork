@@ -32,9 +32,9 @@ class PackageRepoManager:
         self.logger.debug('Filename - %s', package_file)
         url = 'http://%s:%s/packages/%s?user.name=pnda' % (self.prm_host, self.prm_port, package_file)
         self.logger.debug('Request URL - %s', url)
-        resp = requests.put(url, data={'--upload-file': package_file})
+        with open(package_file, 'rb') as fd:
+            resp = requests.put(url, data=fd)
         self.logger.debug('response - %d', resp.status_code)
-        self.logger.debug('response text - %s', resp.text)
         if resp.status_code == 200:
             return True
         return False
