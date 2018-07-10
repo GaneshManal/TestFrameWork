@@ -1,17 +1,18 @@
-edge_ip: 52.35.125.48
-kafka_ip: 18.237.174.86
+edge_ip: 34.214.126.130
+kafka_ip: 35.167.205.16
+cluster_name: test-4055-d
 applications:
     spark:
         batch:
             - sample-app-1:
                 name: spark-batch-1
-                package-name: flink-streaming-host-network-data-usage-java-example-app-1.0.0
-                package-location: http://34.212.168.63/gam/flink-streaming-host-network-data-usage-java-example-app-1.0.0.tar.gz
+                package-name: tla-app-python-1.1.0
+                package-location: http://54.218.111.11/gam/tla-app-python-1.1.0.tar.gz
                 topic-name: avro.pnda.sample.batch
                 event-count: 10
                 producer-file: spark-batch.py
                 payload:
-                    package: flink-streaming-host-network-data-usage-java-example-app
+                    package: tla-app-python-1.1.0
                     oozie:
                         example:
                             freq_in_mins: 180

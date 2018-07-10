@@ -96,14 +96,14 @@ class TestApplication(object):
         self.logger.info('Success - Package deployed.')
 
         # Create application for the Package
-        ret = self._deployment_manager.create_application(app_details.get('package-name'), app_details.get('name'))
+        ret = self._deployment_manager.create_application(app_details)
         if not ret:
             self.logger.error("Deployment Manager Failed to create the application")
             sys.exit(1)
         self.logger.info('Success - Application created.')
 
         # Start application
-        ret = self._deployment_manager.start_application(app_details.get('name'))
+        ret = self._deployment_manager.start_application(app_details)
         if not ret:
             self.logger.error("Deployment Manager Failed to start the application")
             sys.exit(1)
