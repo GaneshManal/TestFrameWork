@@ -28,7 +28,7 @@ class TestApplication(object):
         cls._deployment_manager = DeploymentManager(dm_host, dm_port)
 
         prm_host, prm_port = cls._conn_obj.read_package_repository_params()
-        cls._package_repo_manager = PackageRepoManager(prm_host, prm_host)
+        cls._package_repo_manager = PackageRepoManager(prm_host, prm_port)
 
         hdfs_host, hdfs_port = cls._conn_obj.read_hdfs_params()
         cls._hdfs_manager = HDFSManager(hdfs_host, hdfs_port)
@@ -96,14 +96,14 @@ class TestApplication(object):
         self.logger.info('Success - Package deployed.')
 
         # Create application for the Package
-        ret = self._deployment_manager.create_application(app_details.get('package-name'), app_details.get('name'))
+        ret = self._deployment_manager.create_application(app_details)
         if not ret:
             self.logger.error("Deployment Manager Failed to create the application")
             sys.exit(1)
         self.logger.info('Success - Application created.')
 
         # Start application
-        ret = self._deployment_manager.start_application(app_details.get('name'))
+        ret = self._deployment_manager.start_application(app_details)
         if not ret:
             self.logger.error("Deployment Manager Failed to start the application")
             sys.exit(1)

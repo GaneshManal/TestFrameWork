@@ -2,6 +2,7 @@ import os
 import requests
 import wget
 from util.common import get_logger
+import time
 
 
 class PackageRepoManager:
@@ -17,11 +18,23 @@ class PackageRepoManager:
 
     @staticmethod
     def download_network_package(pkg_url):
-        filename = wget.download(pkg_url, out=os.getcwd() + os.path.sep + 'output')
+        # Overwrite file if already exists
+        filename = pkg_url.split('/')[-1]
+        file_path = os.getcwd() + os.path.sep + filename
+
+        epoch_str = str(time.time())
+        if os.path.exists(file_path):
+            os.rename(file_path, file_path + epoch_str)
+        filename = wget.download(pkg_url)
         return filename
 
     def upload_package_to_repository(self, package_file):
-        self.logger.debug('Package file- %s.', package_file)
-        ret = requests.put("%s:%d/packages/%s.tar.gz?user.name=pnda" % (self.prm_host, self.prm_port, package_file),
-                           data={'--upload-file': package_file})
-        return ret
+        self.logger.debug('Filename - %s', package_file)
+        url = 'http://%s:%s/packages/%s?user.name=pnda' % (self.prm_host, self.prm_port, package_file)
+        self.logger.debug('Request URL - %s', url)
+        with open(package_file, 'rb') as fd:
+            resp = requests.put(url, data=fd)
+        self.logger.debug('response - %d', resp.status_code)
+        if resp.status_code == 200:
+            return True
+        return False

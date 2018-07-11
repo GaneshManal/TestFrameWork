@@ -1,18 +1,17 @@
 edge_ip: 54.245.180.124
-kafka_ip: 18.236.75.32
-pem_file: rhel.pem
+kafka_ip: 35.167.205.16
 applications:
     spark:
         batch:
             - sample-app-1:
                 name: spark-batch-1
-                package-name: spark-batch-example-app-wf-1.1.2
-                package-location: https://s3.amazonaws.com/pnda-apps-public/spark-batch-example-app-wf-1.1.2.tar.gz
+                package-name: tla-app-python-1.1.0
+                package-location: http://54.218.111.11/gam/tla-app-python-1.1.0.tar.gz
                 topic-name: avro.pnda.sample.batch
                 event-count: 10
                 producer-file: spark-batch.py
                 payload:
-                    package: spark-batch-example-app-wf-1.1.2
+                    package: tla-app-python-1.1.0
                     oozie:
                         example:
                             freq_in_mins: 180
