@@ -1,4 +1,4 @@
-edge_ip: 52.35.125.48
+edge_ip: 54.245.180.124
 kafka_ip: 18.236.75.32
 pem_file: rhel.pem
 applications:

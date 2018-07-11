@@ -3,11 +3,13 @@ import json
 import yaml
 import requests
 from util.common import get_logger
+from util.netw_handling import RemoteServer
 
 
 class ClusterConnection:
     clusterApiReachable = False
-    cluster_nodes = dict()
+    _cluster_nodes = dict()
+    _cluster_name = str()
     logger = get_logger('ClusterConnection')
 
     def __init__(self):
@@ -25,6 +27,16 @@ class ClusterConnection:
             return
         self.logger.info("Response Code: %d" % response.status_code)
         self.endpoints = json.loads(response.text)
+
+    def get_cluster_details(self):
+        # first get the cluster name
+        remote_server = RemoteServer(self.input.get('edge_ip'), self.input.get('pem_file'))
+        client = remote_server.connect()
+        self.__class__._cluster_name = self.get_cluster_name()
+        print "in get all nodes"
+        self.__class__._cluster_nodes = remote_server.get_all_nodes(client)
+        print self.__class__._cluster_nodes
+        remote_server.close_connection(client)
 
     def read_deployment_manager_params(self):
         if not ClusterConnection.clusterApiReachable:

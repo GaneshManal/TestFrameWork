@@ -6,21 +6,7 @@ from util.pnda import ClusterConnection
 from tests.scenario.test_application import TestApplication
 
 def run_tests():
-    #nose.main()
-    node_ip, pem_file_location = ClusterConnection().get_edge_ip()
-    rs = RemoteServer(node_ip, pem_file_location)
-    print "making the rs"
-    client = rs.connect()
-    node_dict = rs.get_all_nodes(client)
-    print node_dict
-    rs.close_connection(client)
-    # nose.main()
-    # url = "https://s3.amazonaws.com/pnda-apps-public/spark-batch-example-app-wf-1.1.2.tar.gz"
-    # ret = PackageRepoManager.download_network_package(url)
-
-    # app_obj = TestApplication()
-    # app_obj.setup_class()
-    # app_obj.test_spark_applications()
+    ClusterConnection().get_cluster_details()
 
 
 if __name__ == "__main__":
