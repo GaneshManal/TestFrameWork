@@ -1,6 +1,5 @@
-edge_ip: 34.214.126.130
+edge_ip: 34.220.85.39
 kafka_ip: 35.167.205.16
-cluster_name: test-4055-d
 applications:
     spark:
         batch:

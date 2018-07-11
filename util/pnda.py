@@ -14,7 +14,6 @@ class ClusterConnection(object):
         self.endpoints, self.input = dict(), dict()
         with open(os.getcwd() + os.path.sep + 'conf' + os.path.sep + 'user-conf.yaml') as fd:
             self.input = yaml.load(fd)
-        # self.read_cluster_endpoints()
 
     def read_cluster_endpoints(self):
         edge_node, dm_port = self.input.get('edge_ip'), self.input.get('dm_port', 5000)
